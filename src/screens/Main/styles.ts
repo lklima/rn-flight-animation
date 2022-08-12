@@ -62,3 +62,8 @@ export const LargeText = styled.Text`
   color: white;
   font-size: 30px;
 `;
+
+export const Airplane = styled.Image`
+  height: 30px;
+  width: 180px;
+`;

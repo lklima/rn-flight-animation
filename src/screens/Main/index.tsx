@@ -4,6 +4,7 @@ import { Entypo } from "@expo/vector-icons";
 import * as S from "./styles";
 
 import logo from "../../assets/images/logo.png";
+import airplane from "../../assets/images/ariplane.png";
 
 export default function Main() {
   return (
@@ -29,6 +30,7 @@ export default function Main() {
               <S.SmallText>20:45</S.SmallText>
             </S.TextContent>
           </S.TextRowContent>
+          <S.Airplane source={airplane} />
         </S.Content>
       </S.FlyInfo>
     </S.Container>
