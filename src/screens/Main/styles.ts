@@ -102,3 +102,41 @@ export const Value = styled.Text`
   color: black;
   width: 60%;
 `;
+
+export const Duration = styled.Text`
+  color: black;
+`;
+
+export const Row = styled.TouchableOpacity.attrs({
+  activeOpacity: 0.8,
+})`
+  flex-direction: row;
+  align-items: center;
+  width: 85%;
+  margin-top: 20px;
+`;
+
+export const ColumnView = styled.View`
+  flex: 1;
+`;
+
+export const Profile = styled.Image`
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+`;
+
+export const TotalText = styled.Text`
+  color: gray;
+  width: 85%;
+  text-align: right;
+  margin-top: 40px;
+`;
+
+export const TotalValue = styled.Text`
+  color: black;
+  width: 85%;
+  text-align: right;
+  font-size: 18px;
+  margin-top: 5px;
+`;

@@ -5,6 +5,9 @@ import * as S from "./styles";
 
 import logo from "../../assets/images/logo.png";
 import airplane from "../../assets/images/airplane.png";
+import profile from "../../assets/images/profile.jpeg";
+import nopic from "../../assets/images/nopic.jpeg";
+import Button from "./components/Button";
 
 export default function Main() {
   return (
@@ -51,9 +54,30 @@ export default function Main() {
           <S.Value>AR 580</S.Value>
         </S.TicketView>
       </S.TicketInfo>
-      <S.Value>
+      <S.Duration>
         43h 15m <S.Desc>total duration</S.Desc>
-      </S.Value>
+      </S.Duration>
+      <S.Row>
+        <S.ColumnView>
+          <S.Duration>
+            Jessie J.{"\n"}
+            <S.Desc>jessy@gmail.com</S.Desc>
+          </S.Duration>
+        </S.ColumnView>
+        <S.Profile source={profile} />
+      </S.Row>
+      <S.Row>
+        <S.ColumnView>
+          <S.Duration>
+            Andrea R.{"\n"}
+            <S.Desc>andrea@gmail.com</S.Desc>
+          </S.Duration>
+        </S.ColumnView>
+        <S.Profile source={nopic} />
+      </S.Row>
+      <S.TotalText>Total you will pay</S.TotalText>
+      <S.TotalValue>$ 1,536.00</S.TotalValue>
+      <Button />
     </S.Container>
   );
 }
