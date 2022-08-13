@@ -14,6 +14,7 @@ export const Container = styled(Animated.View)`
   align-items: center;
   position: absolute;
   bottom: 30px;
+  z-index: 9999;
 `;
 
 export const Content = styled(LinearGradient)`

@@ -3,7 +3,11 @@ import { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reani
 
 import * as S from "./styles";
 
-export default function Button() {
+interface Props {
+  onPress: () => void;
+}
+
+export default function Button({ onPress }: Props) {
   const buttonScale = useSharedValue(1);
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
@@ -11,13 +15,14 @@ export default function Button() {
   }));
 
   const handlePress = (press: string) => {
-    buttonScale.value = withTiming(press === "pressIn" ? 0.9 : 1);
+    buttonScale.value = withTiming(press === "pressIn" ? 0.9 : 1, { duration: 100 });
   };
 
   return (
     <S.Container>
       <S.ButtomView style={buttonAnimatedStyle}>
         <S.Buttom
+          onPress={onPress}
           onPressIn={() => handlePress("pressIn")}
           onPressOut={() => handlePress("pressOut")}
         >

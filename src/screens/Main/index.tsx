@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 
 import * as S from "./styles";
@@ -7,12 +7,20 @@ import logo from "../../assets/images/logo.png";
 import airplane from "../../assets/images/airplane.png";
 import profile from "../../assets/images/profile.jpeg";
 import nopic from "../../assets/images/nopic.jpeg";
+
 import Button from "./components/Button";
+import CardSelect from "./components/CardSelect";
 
 export default function Main() {
+  const [showCardSelect, setShowCardSelect] = useState(false);
+
+  const handleConfirm = () => {
+    setShowCardSelect(true);
+  };
+
   return (
     <S.Container>
-      <S.FlyInfo>
+      <S.FlyInfo onTouchEnd={() => setShowCardSelect(false)}>
         <S.Content>
           <S.Logo source={logo} resizeMode="contain" />
           <S.TextRowContent>
@@ -77,7 +85,8 @@ export default function Main() {
       </S.Row>
       <S.TotalText>Total you will pay</S.TotalText>
       <S.TotalValue>$ 1,536.00</S.TotalValue>
-      <Button />
+      <Button onPress={handleConfirm} />
+      {showCardSelect && <CardSelect />}
     </S.Container>
   );
 }
