@@ -2,13 +2,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import Animated from "react-native-reanimated";
 import styled from "styled-components/native";
 
-interface Props {
-  alingment?: "left" | "right";
-  mt?: number;
-  bold?: boolean;
-  noResize?: boolean;
-}
-
 export const Container = styled(Animated.View)`
   width: 100%;
   height: 64%;
@@ -46,55 +39,14 @@ export const Button = styled.TouchableOpacity.attrs({
   box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.15);
 `;
 
-export const CardScroll = styled.ScrollView``;
+export const CardScroll = styled(Animated.ScrollView)``;
 
-export const Card = styled(Animated.View)`
-  width: 73%;
-  height: 180px;
-  align-self: center;
-  margin-bottom: 20px;
-`;
-
-export const CardContent = styled(LinearGradient).attrs({
-  start: { x: 0, y: 0 },
-  end: { x: 0.8, y: 0 },
+export const BottomGradient = styled(LinearGradient).attrs({
+  colors: ["rgba(255, 255, 255, 0)", "white"],
+  end: { x: 0.5, y: 0.5 },
 })`
   width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  padding: 15px 20px;
-  justify-content: space-between;
-`;
-
-export const TopCardLogo = styled.Image`
-  height: 25px;
-  width: 70px;
-`;
-
-export const BottomCardView = styled.View`
-  width: 100%;
-  height: 48px;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
-`;
-
-export const CardTextView = styled.View``;
-
-export const CardNumber = styled.Text`
-  color: white;
-  font-weight: 500;
-  font-size: 13px;
-`;
-
-export const CardName = styled.Text`
-  color: white;
-  font-weight: bold;
-  font-size: 11px;
-  margin-top: 8px;
-`;
-
-export const BottomCardLogo = styled.Image`
-  height: 40px;
-  width: 50px;
+  height: 150px;
+  position: absolute;
+  bottom: 0;
 `;

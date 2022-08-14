@@ -33,7 +33,7 @@ export const cards = [
     id: 5,
     topLogo: require("../../../../../assets/images/americanExpress.png"),
     bottomLogo: require("../../../../../assets/images/visa.png"),
-    colors: ["rgba(126, 184, 253, ${opacity})", "rgba(172, 157, 252, ${opacity})"],
+    colors: [`rgba(126, 184, 253, ${opacity})`, `rgba(172, 157, 252, ${opacity})`],
     number: 8765,
   },
   {
