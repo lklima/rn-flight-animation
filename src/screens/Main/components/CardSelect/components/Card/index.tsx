@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import {
-  FlipInEasyX,
   SharedValue,
   useAnimatedStyle,
   useSharedValue,
@@ -13,6 +12,9 @@ import { ImageSourcePropType } from "react-native";
 
 interface Props {
   index: number;
+  currCardRotationX: SharedValue<number>;
+  nextCardRotationX: SharedValue<number>;
+  nextCardBottom: SharedValue<number>;
   selectedCard: number;
   card: {
     id: number;
@@ -23,34 +25,46 @@ interface Props {
   };
 }
 
-export default function Card({ card, index, selectedCard }: Props) {
+export default function Card({
+  card,
+  index,
+  selectedCard,
+  currCardRotationX,
+  nextCardRotationX,
+  nextCardBottom,
+}: Props) {
   const marginBottom = useSharedValue(-132);
   const rotateX = useSharedValue(55);
   const bottom = useSharedValue(-400);
 
-  // useEffect(() => {
-  //   if (index === selectedCard) {
-  //     rotateX.value = withTiming(0);
-  //     marginBottom.value = withTiming(-20);
-  //   } else {
-  //     rotateX.value = withTiming(45);
-  //     marginBottom.value = withTiming(-140);
-  //   }
-  // }, [index, selectedCard]);
+  const isSelected = index === selectedCard;
+  const nextCard = index === selectedCard + 1;
 
   useEffect(() => {
     if (index === 0) {
-      rotateX.value = withDelay(400, withTiming(0, { duration: 600 }));
+      currCardRotationX.value = withDelay(400, withTiming(0, { duration: 600 }));
       bottom.value = withDelay(300, withTiming(0, { duration: 600 }));
     } else {
-      const delay = index * 50 + 300;
+      const delay = index * 50 + 400;
 
-      bottom.value = withDelay(delay, withTiming(-100, { duration: 500 }));
+      nextCardBottom.value = withDelay(delay, withTiming(-95, { duration: 500 }));
+      bottom.value = withDelay(delay, withTiming(-95, { duration: 500 }));
     }
   }, [index]);
 
   const cardAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ perspective: 400 }, { rotateX: `${rotateX.value}deg` }],
+    transform: [
+      { perspective: 400 },
+      {
+        rotateX: `${
+          isSelected
+            ? currCardRotationX.value
+            : nextCard
+            ? nextCardRotationX.value
+            : rotateX.value
+        }deg`,
+      },
+    ],
     marginBottom: marginBottom.value,
     bottom: bottom.value,
   }));

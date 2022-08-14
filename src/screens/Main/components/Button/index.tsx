@@ -15,7 +15,7 @@ export default function Button({ onPress }: Props) {
   }));
 
   const handlePress = (press: string) => {
-    buttonScale.value = withTiming(press === "pressIn" ? 0.9 : 1, { duration: 100 });
+    buttonScale.value = withTiming(press === "pressIn" ? 0.9 : 1, { duration: 80 });
   };
 
   return (

@@ -17,6 +17,11 @@ export const Container = styled(Animated.View)`
   z-index: 9999;
 `;
 
+export const Content = styled(LinearGradient)`
+  width: 100%;
+  align-items: center;
+`;
+
 export const ButtomView = styled(Animated.View)`
   width: 100%;
   align-items: center;

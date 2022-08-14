@@ -16,7 +16,7 @@ export const Container = styled.SafeAreaView`
 
 export const FlyInfo = styled(Animated.View)`
   width: 100%;
-  height: 40%;
+  height: 41%;
   overflow: hidden;
 `;
 
@@ -33,7 +33,7 @@ export const Content = styled(LinearGradient).attrs({
 `;
 
 export const Logo = styled.Image`
-  height: 30px;
+  height: 33px;
   width: 180px;
 `;
 
@@ -41,7 +41,7 @@ export const TextRowContent = styled.View`
   width: 100%;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 30px;
+  margin-top: 37px;
 `;
 
 export const TextContent = styled.View<Props>`
@@ -59,11 +59,12 @@ export const SmallText = styled.Text<Props>`
   color: white;
   margin-top: ${({ mt }) => (mt ? mt : 0)}px;
   font-weight: ${({ bold }) => (bold ? "600" : "normal")};
+  opacity: ${({ mt }) => (mt ? 1 : 0.8)};
 `;
 
 export const LargeText = styled.Text`
   color: white;
-  font-size: 30px;
+  font-size: 35px;
 `;
 
 export const Airplane = styled(Animated.Image)`
@@ -71,7 +72,7 @@ export const Airplane = styled(Animated.Image)`
   width: 360px;
   position: absolute;
   align-self: center;
-  bottom: -30px;
+  bottom: -35px;
 `;
 
 export const TicketInfo = styled.View`

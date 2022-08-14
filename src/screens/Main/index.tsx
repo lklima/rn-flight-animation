@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { StatusBar } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
 import * as S from "./styles";
@@ -20,6 +21,7 @@ export default function Main() {
 
   return (
     <S.Container>
+      <StatusBar barStyle="dark-content" />
       <S.FlyInfo onTouchEnd={() => setShowCardSelect(false)}>
         <S.Content>
           <S.Logo source={logo} resizeMode="contain" />
@@ -30,8 +32,8 @@ export default function Main() {
               <S.SmallText>24 Apr, 16:30</S.SmallText>
             </S.TextContent>
             <S.HourContent>
-              <Entypo name="chevron-right" size={24} color="white" />
-              <S.SmallText bold mt={5}>
+              <Entypo name="chevron-right" size={30} color="white" />
+              <S.SmallText bold mt={10}>
                 4h 15m
               </S.SmallText>
             </S.HourContent>

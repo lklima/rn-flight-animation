@@ -4,10 +4,9 @@ import styled from "styled-components/native";
 
 export const Container = styled(Animated.View)`
   width: 100%;
-  height: 64%;
+  height: 63%;
   align-items: center;
   position: absolute;
-  padding-top: 20px;
   bottom: 0px;
   background-color: white;
   box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.3);
@@ -15,15 +14,16 @@ export const Container = styled(Animated.View)`
 `;
 
 export const Title = styled.Text`
-  color: gray;
-  margin-bottom: 20px;
+  color: black;
+  margin: 28px 0;
+  opacity: 0.3;
   font-weight: 600;
 `;
 
 export const ButtonView = styled(Animated.View)`
   position: absolute;
   right: 25px;
-  top: 43.5%;
+  top: 45%;
   z-index: 9999;
 `;
 
