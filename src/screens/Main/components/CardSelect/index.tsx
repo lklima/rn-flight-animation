@@ -3,7 +3,6 @@ import { Entypo } from "@expo/vector-icons";
 import {
   FlipInXDown,
   useAnimatedScrollHandler,
-  useAnimatedStyle,
   useSharedValue,
   ZoomIn,
 } from "react-native-reanimated";
@@ -13,25 +12,35 @@ import * as S from "./styles";
 import { cards } from "./utils";
 
 import Card from "./components/Card";
+import { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 
 export default function CardSelect() {
   const currCardRotationX = useSharedValue(55);
   const nextCardRotationX = useSharedValue(55);
+  const currCardBottom = useSharedValue(-132);
   const nextCardBottom = useSharedValue(-95);
-  const yContentOffset = useSharedValue(0);
-
-  const [selectedCard, setSelectedCard] = useState(0);
+  const selectedCard = useSharedValue(0);
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event, context) => {
-      currCardRotationX.value = event.contentOffset.y;
+      currCardRotationX.value = event.contentOffset.y / 2;
       nextCardRotationX.value = -event.contentOffset.y / 4 + 55;
+      currCardBottom.value = event.contentOffset.y;
       nextCardBottom.value = event.contentOffset.y / 5;
     },
   });
 
-  const cardHeight = 180;
-  const snapToOffsets = cards.map((_, i) => (i === 0 ? 0 : i * (cardHeight + 30) + 5));
+  const handleMomentum = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    selectedCard.value = event.nativeEvent.contentOffset.y / 170;
+  };
+
+  // console.log(selectedCard);
+  // const scrollHandler = (event) => {
+  //   console.log(event.nativeEvent.contentOffset.y);
+  // };
+
+  const cardHeight = 170;
+  const snapToOffsets = cards.map((_, i) => (i === 0 ? 0 : i * cardHeight));
 
   return (
     <>
@@ -46,6 +55,7 @@ export default function CardSelect() {
           bounces={false}
           showsVerticalScrollIndicator={false}
           disableIntervalMomentum
+          onMomentumScrollEnd={handleMomentum}
           pagingEnabled
           scrollEventThrottle={16}
           decelerationRate={0.5}
@@ -60,6 +70,7 @@ export default function CardSelect() {
               currCardRotationX={currCardRotationX}
               nextCardRotationX={nextCardRotationX}
               nextCardBottom={nextCardBottom}
+              currCardBottom={currCardBottom}
               selectedCard={selectedCard}
               card={card}
             />

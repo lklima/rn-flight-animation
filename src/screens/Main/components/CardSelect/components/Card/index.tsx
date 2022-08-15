@@ -14,8 +14,9 @@ interface Props {
   index: number;
   currCardRotationX: SharedValue<number>;
   nextCardRotationX: SharedValue<number>;
+  currCardBottom: SharedValue<number>;
   nextCardBottom: SharedValue<number>;
-  selectedCard: number;
+  selectedCard: SharedValue<number>;
   card: {
     id: number;
     colors: string[];
@@ -30,15 +31,15 @@ export default function Card({
   index,
   selectedCard,
   currCardRotationX,
+  currCardBottom,
   nextCardRotationX,
   nextCardBottom,
 }: Props) {
-  const marginBottom = useSharedValue(-132);
   const rotateX = useSharedValue(55);
   const bottom = useSharedValue(-400);
 
-  const isSelected = index === selectedCard;
-  const nextCard = index === selectedCard + 1;
+  const isSelected = index === selectedCard.value;
+  const nextCard = index === selectedCard.value + 1;
 
   useEffect(() => {
     if (index === 0) {
@@ -57,16 +58,15 @@ export default function Card({
       { perspective: 400 },
       {
         rotateX: `${
-          isSelected
+          index === selectedCard.value
             ? currCardRotationX.value
-            : nextCard
+            : index === selectedCard.value + 1
             ? nextCardRotationX.value
             : rotateX.value
         }deg`,
       },
     ],
-    marginBottom: marginBottom.value,
-    bottom: bottom.value,
+    // bottom: bottom.value,
   }));
 
   return (
