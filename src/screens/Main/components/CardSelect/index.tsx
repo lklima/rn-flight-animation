@@ -24,14 +24,14 @@ export default function CardSelect() {
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event, context) => {
       currCardRotationX.value = event.contentOffset.y / 2;
-      nextCardRotationX.value = -event.contentOffset.y / 4 + 55;
+      nextCardRotationX.value = -event.contentOffset.y / 3 + 55;
       currCardBottom.value = event.contentOffset.y;
       nextCardBottom.value = event.contentOffset.y / 5;
     },
   });
 
   const handleMomentum = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    selectedCard.value = event.nativeEvent.contentOffset.y / 170;
+    // selectedCard.value = event.nativeEvent.contentOffset.y / 170;
   };
 
   // console.log(selectedCard);

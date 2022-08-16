@@ -66,7 +66,8 @@ export default function Card({
         }deg`,
       },
     ],
-    // bottom: bottom.value,
+    bottom: bottom.value,
+    marginBottom: index === selectedCard.value ? -130 : -145,
   }));
 
   return (
