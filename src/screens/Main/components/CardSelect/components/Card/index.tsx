@@ -1,22 +1,13 @@
-import React, { useEffect } from "react";
-import {
-  SharedValue,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-  withDelay,
-} from "react-native-reanimated";
+import React from "react";
+import { ImageSourcePropType } from "react-native";
+import { SharedValue, useAnimatedStyle } from "react-native-reanimated";
 
 import * as S from "./styles";
-import { ImageSourcePropType } from "react-native";
 
 interface Props {
-  index: number;
-  currCardRotationX: SharedValue<number>;
-  nextCardRotationX: SharedValue<number>;
-  currCardBottom: SharedValue<number>;
-  nextCardBottom: SharedValue<number>;
-  selectedCard: SharedValue<number>;
+  cardRotationX: SharedValue<number>;
+  cardBottom: SharedValue<number>;
+  cardMarginBottom: SharedValue<number>;
   card: {
     id: number;
     colors: string[];
@@ -28,46 +19,14 @@ interface Props {
 
 export default function Card({
   card,
-  index,
-  selectedCard,
-  currCardRotationX,
-  currCardBottom,
-  nextCardRotationX,
-  nextCardBottom,
+  cardRotationX,
+  cardBottom,
+  cardMarginBottom,
 }: Props) {
-  const rotateX = useSharedValue(55);
-  const bottom = useSharedValue(-400);
-
-  const isSelected = index === selectedCard.value;
-  const nextCard = index === selectedCard.value + 1;
-
-  useEffect(() => {
-    if (index === 0) {
-      currCardRotationX.value = withDelay(400, withTiming(0, { duration: 600 }));
-      bottom.value = withDelay(300, withTiming(0, { duration: 600 }));
-    } else {
-      const delay = index * 50 + 400;
-
-      nextCardBottom.value = withDelay(delay, withTiming(-95, { duration: 500 }));
-      bottom.value = withDelay(delay, withTiming(-95, { duration: 500 }));
-    }
-  }, [index]);
-
   const cardAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { perspective: 400 },
-      {
-        rotateX: `${
-          index === selectedCard.value
-            ? currCardRotationX.value
-            : index === selectedCard.value + 1
-            ? nextCardRotationX.value
-            : rotateX.value
-        }deg`,
-      },
-    ],
-    bottom: bottom.value,
-    marginBottom: index === selectedCard.value ? -130 : -145,
+    transform: [{ perspective: 400 }, { rotateX: `${cardRotationX.value}deg` }],
+    bottom: cardBottom.value,
+    marginBottom: cardMarginBottom.value,
   }));
 
   return (
