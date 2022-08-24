@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import {
@@ -6,6 +6,7 @@ import {
   useAnimatedScrollHandler,
   useSharedValue,
   ZoomIn,
+  interpolate,
 } from "react-native-reanimated";
 
 import * as S from "./styles";
@@ -15,48 +16,55 @@ import { cards } from "./utils";
 import Card from "./components/Card";
 
 export default function CardSelect() {
+  const currCardTop = useSharedValue(400);
   const currCardRotationX = useSharedValue(55);
-  const currCardBottom = useSharedValue(-132);
+
   const cardMarginBottom = useSharedValue(0);
 
   const nextCardRotationX = useSharedValue(55);
-  const nextCardBottom = useSharedValue(-95);
 
   const othersCardsRotationX = useSharedValue(55);
-  const nothersCardsBottom = useSharedValue(-95);
+  const othersCardsTop = useSharedValue(400);
 
   const [selectedCard, setSelectedCard] = useState(0);
-  const selectedSharedCard = useSharedValue(0);
+  const [nextCard, setNextCard] = useState(1);
 
   const cardHeight = 170;
 
   const scrollHandler = useAnimatedScrollHandler({
     // onMomentumEnd: (event, context) => {
-    //   selectedCard.value = event.contentOffset.y / 170;
+    //   // selectedCard.value = event.contentOffset.y / 170;
     //   // console.log(selectedCard.value);
     //   currCardRotationX.value = 0;
     //   nextCardRotationX.value = 55;
     // },
     onScroll: (event, context) => {
-      const value = event.contentOffset.y - cardHeight * selectedSharedCard.value;
+      const value = event.contentOffset.y - cardHeight * selectedCard;
+      const current = interpolate(value, [0, 170], [0, 55]);
+      const next = interpolate(value, [0, 170], [55, 0]);
 
-      console.log("curreent", value / 2);
-      console.log("next", -value / 3 + 55);
+      // console.log({ next, current }, selectedCard);
+      // console.log("next", -value / 3 + 55);
 
-      console.log("index", selectedCard);
-      currCardRotationX.value = value / 2;
-      nextCardRotationX.value = -value / 3 + 55;
-      currCardBottom.value = value;
-      nextCardBottom.value = value / 5;
+      console.log("index", selectedCard, value);
+      currCardRotationX.value = current;
+      nextCardRotationX.value = next;
     },
   });
 
   const handleMomentum = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const newIndex = Math.round(event.nativeEvent.contentOffset.y / 170);
+    const newIndex = Math.round(event.nativeEvent.contentOffset.y / cardHeight);
 
     if (selectedCard !== newIndex) {
-      selectedSharedCard.value = newIndex;
+      currCardRotationX.value = 0;
+      nextCardRotationX.value = 0;
+
       setSelectedCard(newIndex);
+
+      setTimeout(() => {
+        nextCardRotationX.value = 55;
+        setTimeout(() => setNextCard(newIndex + 1), 50);
+      }, 50);
     }
   };
 
@@ -65,12 +73,10 @@ export default function CardSelect() {
   //   console.log(event.nativeEvent.contentOffset.y);
   // };
 
-  const snapToOffsets = cards.map((_, i) => (i === 0 ? 0 : i * cardHeight));
-
   const getCardRotationX = (index: number) => {
     if (index === selectedCard) {
       return currCardRotationX;
-    } else if (index === selectedCard + 1) {
+    } else if (index === nextCard) {
       return nextCardRotationX;
     }
 
@@ -78,12 +84,10 @@ export default function CardSelect() {
   };
 
   const getCardMarginBottom = (index: number) => {
-    return nextCardBottom;
+    return othersCardsTop;
   };
 
-  const getCardBottom = (index: number) => {
-    return nextCardBottom;
-  };
+  const getCardTop = (index: number) => (index === 0 ? currCardTop : othersCardsTop);
 
   return (
     <>
@@ -98,18 +102,19 @@ export default function CardSelect() {
           bounces={false}
           showsVerticalScrollIndicator={false}
           onMomentumScrollEnd={handleMomentum}
+          disableIntervalMomentum
           scrollEventThrottle={16}
-          decelerationRate={0.5}
-          pagingEnabled
+          decelerationRate={0}
           onScroll={scrollHandler}
-          snapToOffsets={snapToOffsets}
+          snapToInterval={cardHeight}
           contentContainerStyle={{ paddingBottom: 1000 }}
         >
           {cards.map((card, index) => {
             return (
               <Card
                 key={card.id}
-                cardBottom={getCardBottom(index)}
+                index={index}
+                cardTop={getCardTop(index)}
                 cardMarginBottom={getCardMarginBottom(index)}
                 cardRotationX={getCardRotationX(index)}
                 card={card}
