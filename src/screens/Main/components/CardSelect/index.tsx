@@ -16,6 +16,8 @@ import { cards } from "./utils";
 import Card from "./components/Card";
 
 export default function CardSelect() {
+  const prevCardRotationX = useSharedValue(55);
+
   const currCardTop = useSharedValue(400);
   const currCardRotationX = useSharedValue(55);
 
@@ -28,27 +30,27 @@ export default function CardSelect() {
 
   const [selectedCard, setSelectedCard] = useState(0);
   const [nextCard, setNextCard] = useState(1);
+  const [prevCard, setPrevCard] = useState(0);
+
+  const toDown = useSharedValue(false);
 
   const cardHeight = 170;
 
   const scrollHandler = useAnimatedScrollHandler({
-    // onMomentumEnd: (event, context) => {
-    //   // selectedCard.value = event.contentOffset.y / 170;
-    //   // console.log(selectedCard.value);
-    //   currCardRotationX.value = 0;
-    //   nextCardRotationX.value = 55;
-    // },
-    onScroll: (event, context) => {
-      const value = event.contentOffset.y - cardHeight * selectedCard;
+    onScroll: (event, context: any) => {
+      toDown.value = context.lastValue > event.contentOffset.y;
+      const value = Math.abs(event.contentOffset.y - cardHeight * selectedCard);
+
+      console.log("laste", value);
+
       const current = interpolate(value, [0, 170], [0, 55]);
-      const next = interpolate(value, [0, 170], [55, 0]);
+      const prev = interpolate(value, [0, 170], [55, 0]);
+      const next = interpolate(value, [0, 170], [55, toDown.value ? 55 : 0]);
 
-      // console.log({ next, current }, selectedCard);
-      // console.log("next", -value / 3 + 55);
-
-      console.log("index", selectedCard, value);
       currCardRotationX.value = current;
       nextCardRotationX.value = next;
+      prevCardRotationX.value = prev;
+      context.lastValue = event.contentOffset.y;
     },
   });
 
@@ -57,27 +59,28 @@ export default function CardSelect() {
 
     if (selectedCard !== newIndex) {
       currCardRotationX.value = 0;
-      nextCardRotationX.value = 0;
+
+      // nextCardRotationX.value = 0;
 
       setSelectedCard(newIndex);
 
       setTimeout(() => {
         nextCardRotationX.value = 55;
-        setTimeout(() => setNextCard(newIndex + 1), 50);
-      }, 50);
+        setTimeout(() => {
+          setNextCard(newIndex + 1);
+          setPrevCard(newIndex - 1);
+        }, 100);
+      }, 100);
     }
   };
-
-  // console.log(selectedCard);
-  // const scrollHandler = (event) => {
-  //   console.log(event.nativeEvent.contentOffset.y);
-  // };
 
   const getCardRotationX = (index: number) => {
     if (index === selectedCard) {
       return currCardRotationX;
     } else if (index === nextCard) {
       return nextCardRotationX;
+    } else if (index === prevCard) {
+      return prevCardRotationX;
     }
 
     return othersCardsRotationX;
