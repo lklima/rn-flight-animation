@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import {
@@ -17,18 +17,16 @@ import Card from "./components/Card";
 
 export default function CardSelect() {
   const prevCardRotationX = useSharedValue(55);
-
-  const currCardTop = useSharedValue(400);
-  const currCardRotationX = useSharedValue(55);
-
-  const currentCardMarginBottom = useSharedValue(40);
-  const nextCardMarginBottom = useSharedValue(-40);
   const prevCardMarginBottom = useSharedValue(0);
 
+  const currentCardMarginBottom = useSharedValue(-35);
+  const currCardRotationX = useSharedValue(55);
+
+  const nextCardMarginBottom = useSharedValue(-135);
   const nextCardRotationX = useSharedValue(55);
 
   const othersCardsRotationX = useSharedValue(55);
-  const othersCardsTop = useSharedValue(400);
+  const othersCardMarginBottom = useSharedValue(-135);
 
   const [selectedCard, setSelectedCard] = useState(0);
   const [nextCard, setNextCard] = useState(1);
@@ -42,19 +40,23 @@ export default function CardSelect() {
     onBeginDrag: (_, context: any) => (context.isScrolling = true),
     onEndDrag: (_, context: any) => (context.isScrolling = false),
     onScroll: (event, context: any) => {
+      const newIndex = Math.round(event.contentOffset.y / cardHeight);
+
+      console.log({ newIndex });
+
       if (context.isScrolling) {
         toDown.value = context.lastValue > event.contentOffset.y;
       }
 
       const value = Math.abs(event.contentOffset.y - cardHeight * selectedCard);
 
-      const current = interpolate(value, [0, 170], [0, 55]);
-      const prev = interpolate(value, [0, 170], [55, 0]);
-      const next = interpolate(value, [0, 170], [55, toDown.value ? 55 : 0]);
+      currCardRotationX.value = interpolate(value, [0, 170], [0, 55]);
+      nextCardRotationX.value = interpolate(value, [0, 170], [55, 0]);
+      prevCardRotationX.value = interpolate(value, [0, 170], [55, toDown.value ? 55 : 0]);
 
-      currCardRotationX.value = current;
-      nextCardRotationX.value = next;
-      prevCardRotationX.value = prev;
+      currentCardMarginBottom.value = interpolate(value, [0, 170], [-35, 0]);
+      nextCardMarginBottom.value = interpolate(value, [0, 170], [-135, -35]);
+
       context.lastValue = event.contentOffset.y;
     },
   });
@@ -63,32 +65,20 @@ export default function CardSelect() {
     const newIndex = Math.round(event.nativeEvent.contentOffset.y / cardHeight);
 
     if (selectedCard !== newIndex) {
-      if (toDown.value) {
-        nextCardRotationX.value = 55;
-      } else {
-        nextCardRotationX.value = 0;
-        currCardRotationX.value = 0;
-      }
+      nextCardRotationX.value = 0;
+      currCardRotationX.value = 0;
 
-      if (toDown.value) {
-        setTimeout(() => {
-          currCardRotationX.value = 0;
-        }, 100);
-
-        setTimeout(() => {
-          setSelectedCard(newIndex);
-        }, 100);
-      } else {
-        setSelectedCard(newIndex);
-      }
+      setSelectedCard(newIndex);
 
       setTimeout(() => {
         nextCardRotationX.value = 55;
+        nextCardMarginBottom.value = -135;
+        currentCardMarginBottom.value = -35;
 
         setTimeout(() => {
           setNextCard(newIndex + 1);
           setPrevCard(newIndex - 1);
-        }, 50);
+        }, 100);
       }, 150);
     }
   };
@@ -98,7 +88,7 @@ export default function CardSelect() {
       return currCardRotationX;
     } else if (index === nextCard) {
       return nextCardRotationX;
-    } else if (index === prevCard) {
+    } else if (index <= prevCard) {
       return prevCardRotationX;
     }
 
@@ -110,12 +100,12 @@ export default function CardSelect() {
       return currentCardMarginBottom;
     } else if (index === nextCard) {
       return nextCardMarginBottom;
+    } else if (index <= prevCard) {
+      return prevCardMarginBottom;
     }
 
-    return nextCardMarginBottom;
+    return othersCardMarginBottom;
   };
-
-  const getCardTop = (index: number) => (index === 0 ? currCardTop : othersCardsTop);
 
   return (
     <>
@@ -142,7 +132,6 @@ export default function CardSelect() {
               <Card
                 key={card.id}
                 index={index}
-                cardTop={getCardTop(index)}
                 cardMarginBottom={getCardMarginBottom(index)}
                 cardRotationX={getCardRotationX(index)}
                 card={card}

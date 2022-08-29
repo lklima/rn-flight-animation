@@ -3,6 +3,7 @@ import { ImageSourcePropType } from "react-native";
 import {
   SharedValue,
   useAnimatedStyle,
+  useSharedValue,
   withDelay,
   withTiming,
 } from "react-native-reanimated";
@@ -11,7 +12,6 @@ import * as S from "./styles";
 
 interface Props {
   cardRotationX: SharedValue<number>;
-  cardTop: SharedValue<number>;
   cardMarginBottom: SharedValue<number>;
   index: number;
   card: {
@@ -23,19 +23,15 @@ interface Props {
   };
 }
 
-export default function Card({
-  index,
-  card,
-  cardRotationX,
-  cardTop,
-  cardMarginBottom,
-}: Props) {
+export default function Card({ index, card, cardRotationX, cardMarginBottom }: Props) {
+  const cardTop = useSharedValue(400);
+
   useEffect(() => {
     if (index === 0) {
       cardRotationX.value = withDelay(450, withTiming(0, { duration: 600 }));
       cardTop.value = withDelay(300, withTiming(0, { duration: 600 }));
     } else {
-      const delay = index * 60;
+      const delay = index * 50 + 300;
 
       cardTop.value = withDelay(delay, withTiming(0, { duration: 600 }));
     }
