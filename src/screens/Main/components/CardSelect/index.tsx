@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { Entypo } from "@expo/vector-icons";
-import { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import {
   FlipInXDown,
   useAnimatedScrollHandler,
@@ -28,9 +27,9 @@ export default function CardSelect() {
   const othersCardsRotationX = useSharedValue(55);
   const othersCardMarginBottom = useSharedValue(-135);
 
-  const [selectedCard, setSelectedCard] = useState(0);
-  const [nextCard, setNextCard] = useState(1);
-  const [prevCard, setPrevCard] = useState(0);
+  const selectedCard = useSharedValue(0);
+  const nextCard = useSharedValue(0);
+  const prevCard = useSharedValue(0);
 
   const toDown = useSharedValue(false);
 
@@ -40,15 +39,17 @@ export default function CardSelect() {
     onBeginDrag: (_, context: any) => (context.isScrolling = true),
     onEndDrag: (_, context: any) => (context.isScrolling = false),
     onScroll: (event, context: any) => {
-      const newIndex = Math.round(event.contentOffset.y / cardHeight);
+      const newIndex = Math.floor(event.contentOffset.y / cardHeight);
 
-      console.log({ newIndex });
+      selectedCard.value = newIndex;
+      nextCard.value = newIndex + 1;
+      prevCard.value = newIndex - 1;
 
       if (context.isScrolling) {
         toDown.value = context.lastValue > event.contentOffset.y;
       }
 
-      const value = Math.abs(event.contentOffset.y - cardHeight * selectedCard);
+      const value = Math.abs(event.contentOffset.y - cardHeight * newIndex);
 
       currCardRotationX.value = interpolate(value, [0, 170], [0, 55]);
       nextCardRotationX.value = interpolate(value, [0, 170], [55, 0]);
@@ -60,52 +61,6 @@ export default function CardSelect() {
       context.lastValue = event.contentOffset.y;
     },
   });
-
-  const handleMomentum = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const newIndex = Math.round(event.nativeEvent.contentOffset.y / cardHeight);
-
-    if (selectedCard !== newIndex) {
-      nextCardRotationX.value = 0;
-      currCardRotationX.value = 0;
-
-      setSelectedCard(newIndex);
-
-      setTimeout(() => {
-        nextCardRotationX.value = 55;
-        nextCardMarginBottom.value = -135;
-        currentCardMarginBottom.value = -35;
-
-        setTimeout(() => {
-          setNextCard(newIndex + 1);
-          setPrevCard(newIndex - 1);
-        }, 100);
-      }, 150);
-    }
-  };
-
-  const getCardRotationX = (index: number) => {
-    if (index === selectedCard) {
-      return currCardRotationX;
-    } else if (index === nextCard) {
-      return nextCardRotationX;
-    } else if (index <= prevCard) {
-      return prevCardRotationX;
-    }
-
-    return othersCardsRotationX;
-  };
-
-  const getCardMarginBottom = (index: number) => {
-    if (index === selectedCard) {
-      return currentCardMarginBottom;
-    } else if (index === nextCard) {
-      return nextCardMarginBottom;
-    } else if (index <= prevCard) {
-      return prevCardMarginBottom;
-    }
-
-    return othersCardMarginBottom;
-  };
 
   return (
     <>
@@ -119,7 +74,6 @@ export default function CardSelect() {
         <S.CardScroll
           bounces={false}
           showsVerticalScrollIndicator={false}
-          onMomentumScrollEnd={handleMomentum}
           disableIntervalMomentum
           scrollEventThrottle={16}
           decelerationRate={0}
@@ -127,17 +81,24 @@ export default function CardSelect() {
           snapToInterval={cardHeight}
           contentContainerStyle={{ paddingBottom: 1000 }}
         >
-          {cards.map((card, index) => {
-            return (
-              <Card
-                key={card.id}
-                index={index}
-                cardMarginBottom={getCardMarginBottom(index)}
-                cardRotationX={getCardRotationX(index)}
-                card={card}
-              />
-            );
-          })}
+          {cards.map((card, index) => (
+            <Card
+              key={card.id}
+              index={index}
+              selectedCard={selectedCard}
+              nextCard={nextCard}
+              prevCard={prevCard}
+              currCardRotationX={currCardRotationX}
+              prevCardRotationX={prevCardRotationX}
+              nextCardRotationX={nextCardRotationX}
+              othersCardsRotationX={othersCardsRotationX}
+              currentCardMarginBottom={currentCardMarginBottom}
+              nextCardMarginBottom={nextCardMarginBottom}
+              prevCardMarginBottom={prevCardMarginBottom}
+              othersCardMarginBottom={othersCardMarginBottom}
+              card={card}
+            />
+          ))}
         </S.CardScroll>
         <S.BottomGradient pointerEvents="none" />
       </S.Container>

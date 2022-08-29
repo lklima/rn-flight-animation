@@ -11,8 +11,17 @@ import {
 import * as S from "./styles";
 
 interface Props {
-  cardRotationX: SharedValue<number>;
-  cardMarginBottom: SharedValue<number>;
+  selectedCard: SharedValue<number>;
+  nextCard: SharedValue<number>;
+  prevCard: SharedValue<number>;
+  currCardRotationX: SharedValue<number>;
+  prevCardRotationX: SharedValue<number>;
+  nextCardRotationX: SharedValue<number>;
+  othersCardsRotationX: SharedValue<number>;
+  currentCardMarginBottom: SharedValue<number>;
+  nextCardMarginBottom: SharedValue<number>;
+  prevCardMarginBottom: SharedValue<number>;
+  othersCardMarginBottom: SharedValue<number>;
   index: number;
   card: {
     id: number;
@@ -23,12 +32,26 @@ interface Props {
   };
 }
 
-export default function Card({ index, card, cardRotationX, cardMarginBottom }: Props) {
+export default function Card({
+  index,
+  card,
+  selectedCard,
+  nextCard,
+  prevCard,
+  currCardRotationX,
+  prevCardRotationX,
+  nextCardRotationX,
+  othersCardsRotationX,
+  currentCardMarginBottom,
+  nextCardMarginBottom,
+  prevCardMarginBottom,
+  othersCardMarginBottom,
+}: Props) {
   const cardTop = useSharedValue(400);
 
   useEffect(() => {
     if (index === 0) {
-      cardRotationX.value = withDelay(450, withTiming(0, { duration: 600 }));
+      currCardRotationX.value = withDelay(450, withTiming(0, { duration: 600 }));
       cardTop.value = withDelay(300, withTiming(0, { duration: 600 }));
     } else {
       const delay = index * 50 + 300;
@@ -38,9 +61,29 @@ export default function Card({ index, card, cardRotationX, cardMarginBottom }: P
   }, [index]);
 
   const cardAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ perspective: 400 }, { rotateX: `${cardRotationX.value}deg` }],
+    transform: [
+      { perspective: 400 },
+      {
+        rotateX: `${
+          index === selectedCard.value
+            ? currCardRotationX.value
+            : index === nextCard.value
+            ? nextCardRotationX.value
+            : index <= prevCard.value
+            ? prevCardRotationX.value
+            : othersCardsRotationX.value
+        }deg`,
+      },
+    ],
     top: cardTop.value,
-    marginBottom: cardMarginBottom.value,
+    marginBottom:
+      index === selectedCard.value
+        ? currentCardMarginBottom.value
+        : index === nextCard.value
+        ? nextCardMarginBottom.value
+        : index <= prevCard.value
+        ? prevCardMarginBottom.value
+        : othersCardMarginBottom.value,
   }));
 
   return (
