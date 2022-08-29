@@ -21,7 +21,9 @@ export default function CardSelect() {
   const currCardTop = useSharedValue(400);
   const currCardRotationX = useSharedValue(55);
 
-  const cardMarginBottom = useSharedValue(0);
+  const currentCardMarginBottom = useSharedValue(40);
+  const nextCardMarginBottom = useSharedValue(-40);
+  const prevCardMarginBottom = useSharedValue(0);
 
   const nextCardRotationX = useSharedValue(55);
 
@@ -37,11 +39,14 @@ export default function CardSelect() {
   const cardHeight = 170;
 
   const scrollHandler = useAnimatedScrollHandler({
+    onBeginDrag: (_, context: any) => (context.isScrolling = true),
+    onEndDrag: (_, context: any) => (context.isScrolling = false),
     onScroll: (event, context: any) => {
-      toDown.value = context.lastValue > event.contentOffset.y;
-      const value = Math.abs(event.contentOffset.y - cardHeight * selectedCard);
+      if (context.isScrolling) {
+        toDown.value = context.lastValue > event.contentOffset.y;
+      }
 
-      console.log("laste", value);
+      const value = Math.abs(event.contentOffset.y - cardHeight * selectedCard);
 
       const current = interpolate(value, [0, 170], [0, 55]);
       const prev = interpolate(value, [0, 170], [55, 0]);
@@ -58,19 +63,33 @@ export default function CardSelect() {
     const newIndex = Math.round(event.nativeEvent.contentOffset.y / cardHeight);
 
     if (selectedCard !== newIndex) {
-      currCardRotationX.value = 0;
+      if (toDown.value) {
+        nextCardRotationX.value = 55;
+      } else {
+        nextCardRotationX.value = 0;
+        currCardRotationX.value = 0;
+      }
 
-      // nextCardRotationX.value = 0;
+      if (toDown.value) {
+        setTimeout(() => {
+          currCardRotationX.value = 0;
+        }, 100);
 
-      setSelectedCard(newIndex);
+        setTimeout(() => {
+          setSelectedCard(newIndex);
+        }, 100);
+      } else {
+        setSelectedCard(newIndex);
+      }
 
       setTimeout(() => {
         nextCardRotationX.value = 55;
+
         setTimeout(() => {
           setNextCard(newIndex + 1);
           setPrevCard(newIndex - 1);
-        }, 100);
-      }, 100);
+        }, 50);
+      }, 150);
     }
   };
 
@@ -87,7 +106,13 @@ export default function CardSelect() {
   };
 
   const getCardMarginBottom = (index: number) => {
-    return othersCardsTop;
+    if (index === selectedCard) {
+      return currentCardMarginBottom;
+    } else if (index === nextCard) {
+      return nextCardMarginBottom;
+    }
+
+    return nextCardMarginBottom;
   };
 
   const getCardTop = (index: number) => (index === 0 ? currCardTop : othersCardsTop);
