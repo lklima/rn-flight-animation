@@ -6,6 +6,7 @@ import {
   useSharedValue,
   ZoomIn,
   interpolate,
+  withTiming,
 } from "react-native-reanimated";
 
 import * as S from "./styles";
@@ -23,13 +24,12 @@ export default function CardSelect() {
 
   const nextCardMarginBottom = useSharedValue(-135);
   const nextCardRotationX = useSharedValue(55);
+  const nextCardShadowOpacity = useSharedValue(0);
 
   const othersCardsRotationX = useSharedValue(55);
   const othersCardMarginBottom = useSharedValue(-135);
 
-  const selectedCard = useSharedValue(0);
-  const nextCard = useSharedValue(0);
-  const prevCard = useSharedValue(0);
+  const currentCard = useSharedValue(0);
 
   const toDown = useSharedValue(false);
 
@@ -41,12 +41,18 @@ export default function CardSelect() {
     onScroll: (event, context: any) => {
       const newIndex = Math.floor(event.contentOffset.y / cardHeight);
 
-      selectedCard.value = newIndex;
-      nextCard.value = newIndex + 1;
-      prevCard.value = newIndex - 1;
+      currentCard.value = newIndex;
 
       if (context.isScrolling) {
         toDown.value = context.lastValue > event.contentOffset.y;
+
+        if (!toDown.value) {
+          othersCardsRotationX.value = withTiming(47);
+        }
+      } else {
+        if (!toDown.value) {
+          othersCardsRotationX.value = withTiming(55);
+        }
       }
 
       const value = Math.abs(event.contentOffset.y - cardHeight * newIndex);
@@ -57,6 +63,8 @@ export default function CardSelect() {
 
       currentCardMarginBottom.value = interpolate(value, [0, 170], [-35, 0]);
       nextCardMarginBottom.value = interpolate(value, [0, 170], [-135, -35]);
+
+      nextCardShadowOpacity.value = interpolate(value, [0, 170], [0, 0.25]);
 
       context.lastValue = event.contentOffset.y;
     },
@@ -69,7 +77,7 @@ export default function CardSelect() {
           <Entypo name="plus" size={26} color="#ddd" />
         </S.Button>
       </S.ButtonView>
-      <S.Container entering={FlipInXDown.duration(400)}>
+      <S.Container entering={FlipInXDown.duration(600)}>
         <S.Title>SELECT PAYMENT METHOD</S.Title>
         <S.CardScroll
           bounces={false}
@@ -85,9 +93,8 @@ export default function CardSelect() {
             <Card
               key={card.id}
               index={index}
-              selectedCard={selectedCard}
-              nextCard={nextCard}
-              prevCard={prevCard}
+              card={card}
+              currentCard={currentCard}
               currCardRotationX={currCardRotationX}
               prevCardRotationX={prevCardRotationX}
               nextCardRotationX={nextCardRotationX}
@@ -96,7 +103,7 @@ export default function CardSelect() {
               nextCardMarginBottom={nextCardMarginBottom}
               prevCardMarginBottom={prevCardMarginBottom}
               othersCardMarginBottom={othersCardMarginBottom}
-              card={card}
+              nextCardShadowOpacity={nextCardShadowOpacity}
             />
           ))}
         </S.CardScroll>

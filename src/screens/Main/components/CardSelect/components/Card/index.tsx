@@ -11,9 +11,7 @@ import {
 import * as S from "./styles";
 
 interface Props {
-  selectedCard: SharedValue<number>;
-  nextCard: SharedValue<number>;
-  prevCard: SharedValue<number>;
+  currentCard: SharedValue<number>;
   currCardRotationX: SharedValue<number>;
   prevCardRotationX: SharedValue<number>;
   nextCardRotationX: SharedValue<number>;
@@ -22,6 +20,7 @@ interface Props {
   nextCardMarginBottom: SharedValue<number>;
   prevCardMarginBottom: SharedValue<number>;
   othersCardMarginBottom: SharedValue<number>;
+  nextCardShadowOpacity: SharedValue<number>;
   index: number;
   card: {
     id: number;
@@ -35,9 +34,7 @@ interface Props {
 export default function Card({
   index,
   card,
-  selectedCard,
-  nextCard,
-  prevCard,
+  currentCard,
   currCardRotationX,
   prevCardRotationX,
   nextCardRotationX,
@@ -46,6 +43,7 @@ export default function Card({
   nextCardMarginBottom,
   prevCardMarginBottom,
   othersCardMarginBottom,
+  nextCardShadowOpacity,
 }: Props) {
   const cardTop = useSharedValue(400);
 
@@ -62,14 +60,14 @@ export default function Card({
 
   const cardAnimatedStyle = useAnimatedStyle(() => ({
     transform: [
-      { perspective: 400 },
+      { perspective: 500 },
       {
         rotateX: `${
-          index === selectedCard.value
+          index === currentCard.value
             ? currCardRotationX.value
-            : index === nextCard.value
+            : index === currentCard.value + 1
             ? nextCardRotationX.value
-            : index <= prevCard.value
+            : index < currentCard.value
             ? prevCardRotationX.value
             : othersCardsRotationX.value
         }deg`,
@@ -77,13 +75,20 @@ export default function Card({
     ],
     top: cardTop.value,
     marginBottom:
-      index === selectedCard.value
+      index === currentCard.value
         ? currentCardMarginBottom.value
-        : index === nextCard.value
+        : index === currentCard.value + 1
         ? nextCardMarginBottom.value
-        : index <= prevCard.value
+        : index < currentCard.value
         ? prevCardMarginBottom.value
-        : othersCardMarginBottom.value,
+        : -135,
+    shadowOpacity:
+      index <= currentCard.value
+        ? 0.25
+        : index === currentCard.value + 1
+        ? nextCardShadowOpacity.value
+        : 0,
+    zIndex: index === currentCard.value ? 999 : 0,
   }));
 
   return (

@@ -7,6 +7,10 @@ export const Card = styled(Animated.View)`
   height: 170px;
   align-self: center;
   margin-bottom: 20px;
+  box-shadow: 0 20px 5px;
+  shadow-color: black;
+  shadow-offset: 0 20px;
+  shadow-radius: 8px;
 `;
 
 export const CardContent = styled(LinearGradient).attrs({
