@@ -27,7 +27,7 @@ export default function CardSelect() {
 
   const currentCard = useSharedValue(0);
 
-  const toDown = useSharedValue(true);
+  const toDown = useSharedValue(false);
   const isScrolling = useSharedValue(false);
 
   const cardHeight = 170;
@@ -39,8 +39,7 @@ export default function CardSelect() {
       const newIndex = Math.floor(event.contentOffset.y / cardHeight);
 
       currentCard.value = newIndex;
-
-      toDown.value = context.lastValue >= event.contentOffset.y;
+      toDown.value = context.lastValue < event.contentOffset.y;
 
       const value = Math.abs(event.contentOffset.y - cardHeight * newIndex);
 

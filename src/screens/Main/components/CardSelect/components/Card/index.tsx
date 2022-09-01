@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { ImageSourcePropType } from "react-native";
 import {
   SharedValue,
-  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -49,41 +48,22 @@ export default function Card({
   const cardTop = useSharedValue(400);
   const othersCardsRotationX = useSharedValue(60);
 
-  useEffect(() => {
-    if (index === 0) {
-      currCardRotationX.value = withDelay(450, withTiming(0, { duration: 600 }));
-      cardTop.value = withDelay(300, withTiming(0, { duration: 600 }));
-    } else {
-      const delay = index * 50 + 300;
-
-      cardTop.value = withDelay(delay, withTiming(0, { duration: 600 }));
-    }
-  }, [index]);
-
-  useAnimatedReaction(
-    () => {
-      return isScrolling.value;
-    },
-    () => {
-      console.log(isScrolling.value, !toDown.value);
-
-      if (isScrolling.value) {
-        if (!toDown.value) {
-          othersCardsRotationX.value = withTiming(50, { duration: 150 });
-        }
-      } else {
-        if (!toDown.value) {
-          othersCardsRotationX.value = withDelay(
-            index * 60,
-            withTiming(60, { duration: 200 })
-          );
-        }
-      }
-    },
-    [isScrolling.value, currentCard.value, toDown.value]
-  );
+  if (index === 0) {
+    currCardRotationX.value = withDelay(450, withTiming(0, { duration: 600 }));
+    cardTop.value = withDelay(300, withTiming(0, { duration: 600 }));
+  } else {
+    cardTop.value = withDelay(index * 50 + 300, withTiming(0, { duration: 600 }));
+  }
 
   const cardAnimatedStyle = useAnimatedStyle(() => {
+    if (isScrolling.value) {
+      if (toDown.value) {
+        othersCardsRotationX.value = withTiming(50, { duration: 200 });
+      }
+    } else {
+      othersCardsRotationX.value = withTiming(60, { duration: index * 100 });
+    }
+
     return {
       transform: [
         { perspective: 500 },
