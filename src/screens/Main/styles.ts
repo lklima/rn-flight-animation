@@ -14,6 +14,12 @@ export const Container = styled.SafeAreaView`
   align-items: center;
 `;
 
+export const Background = styled(Animated.View)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+`;
+
 export const FlyInfo = styled(Animated.View)`
   width: 100%;
   height: 41%;
