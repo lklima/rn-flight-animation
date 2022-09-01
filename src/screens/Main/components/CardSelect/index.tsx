@@ -6,6 +6,8 @@ import {
   useSharedValue,
   ZoomIn,
   interpolate,
+  FlipOutXDown,
+  ZoomOut,
 } from "react-native-reanimated";
 
 import * as S from "./styles";
@@ -58,12 +60,18 @@ export default function CardSelect() {
 
   return (
     <>
-      <S.ButtonView entering={ZoomIn.delay(100).duration(1000)}>
+      <S.ButtonView
+        entering={ZoomIn.delay(100).duration(1000)}
+        exiting={ZoomOut.duration(600)}
+      >
         <S.Button>
           <Entypo name="plus" size={26} color="#ddd" />
         </S.Button>
       </S.ButtonView>
-      <S.Container entering={FlipInXDown.duration(600)}>
+      <S.Container
+        entering={FlipInXDown.duration(600)}
+        exiting={FlipOutXDown.duration(600)}
+      >
         <S.Title>SELECT PAYMENT METHOD</S.Title>
         <S.CardScroll
           bounces={false}

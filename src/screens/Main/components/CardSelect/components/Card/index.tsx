@@ -48,17 +48,19 @@ export default function Card({
   const cardTop = useSharedValue(400);
   const othersCardsRotationX = useSharedValue(60);
 
-  if (index === 0) {
-    currCardRotationX.value = withDelay(450, withTiming(0, { duration: 600 }));
-    cardTop.value = withDelay(300, withTiming(0, { duration: 600 }));
-  } else {
-    cardTop.value = withDelay(index * 50 + 300, withTiming(0, { duration: 600 }));
-  }
+  setTimeout(() => {
+    if (index === 0) {
+      currCardRotationX.value = withDelay(450, withTiming(0, { duration: 600 }));
+      cardTop.value = withDelay(300, withTiming(0, { duration: 600 }));
+    } else {
+      cardTop.value = withDelay(index * 50 + 300, withTiming(0, { duration: 600 }));
+    }
+  }, 100);
 
   const cardAnimatedStyle = useAnimatedStyle(() => {
     if (isScrolling.value) {
       if (toDown.value) {
-        othersCardsRotationX.value = withTiming(50, { duration: 200 });
+        othersCardsRotationX.value = withTiming(50, { duration: 150 });
       }
     } else {
       othersCardsRotationX.value = withTiming(60, { duration: index * 100 });

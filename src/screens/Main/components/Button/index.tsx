@@ -1,5 +1,10 @@
 import React from "react";
-import { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import {
+  FlipOutXUp,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import * as S from "./styles";
 
@@ -19,18 +24,16 @@ export default function Button({ onPress }: Props) {
   };
 
   return (
-    <S.Container>
-      <S.ButtomView style={buttonAnimatedStyle}>
-        <S.Buttom
-          onPress={onPress}
-          onPressIn={() => handlePress("pressIn")}
-          onPressOut={() => handlePress("pressOut")}
-        >
-          <S.ButtomContent>
-            <S.ButtomText>Confirm $1,536.00</S.ButtomText>
-          </S.ButtomContent>
-        </S.Buttom>
-      </S.ButtomView>
-    </S.Container>
+    <S.ButtomView exiting={FlipOutXUp} style={buttonAnimatedStyle}>
+      <S.Buttom
+        onPress={onPress}
+        onPressIn={() => handlePress("pressIn")}
+        onPressOut={() => handlePress("pressOut")}
+      >
+        <S.ButtomContent>
+          <S.ButtomText>Confirm $1,536.00</S.ButtomText>
+        </S.ButtomContent>
+      </S.Buttom>
+    </S.ButtomView>
   );
 }

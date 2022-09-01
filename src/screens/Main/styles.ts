@@ -72,10 +72,11 @@ export const Airplane = styled(Animated.Image)`
   width: 360px;
   position: absolute;
   align-self: center;
-  bottom: -35px;
+  top: 27%;
+  z-index: 9999;
 `;
 
-export const TicketInfo = styled.View`
+export const TicketInfo = styled(Animated.View)`
   width: 100%;
   height: 80px;
   flex-direction: row;
@@ -104,6 +105,12 @@ export const Value = styled.Text`
   width: 60%;
 `;
 
+export const InfoContent = styled(Animated.View)`
+  flex: 1;
+  width: 85%;
+  align-items: center;
+`;
+
 export const Duration = styled.Text`
   color: black;
 `;
@@ -113,7 +120,7 @@ export const Row = styled.TouchableOpacity.attrs({
 })`
   flex-direction: row;
   align-items: center;
-  width: 85%;
+  width: 100%;
   margin-top: 20px;
 `;
 
@@ -129,14 +136,14 @@ export const Profile = styled.Image`
 
 export const TotalText = styled.Text`
   color: gray;
-  width: 85%;
+  width: 100%;
   text-align: right;
   margin-top: 40px;
 `;
 
 export const TotalValue = styled.Text`
   color: black;
-  width: 85%;
+  width: 100%;
   text-align: right;
   font-size: 18px;
   margin-top: 5px;

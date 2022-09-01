@@ -2,21 +2,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import Animated from "react-native-reanimated";
 import styled from "styled-components/native";
 
-interface Props {
-  alingment?: "left" | "right";
-  mt?: number;
-  bold?: boolean;
-  noResize?: boolean;
-}
-
-export const Container = styled(Animated.View)`
-  width: 100%;
-  align-items: center;
-  position: absolute;
-  bottom: 30px;
-  z-index: 9999;
-`;
-
 export const Content = styled(LinearGradient)`
   width: 100%;
   align-items: center;
@@ -25,6 +10,9 @@ export const Content = styled(LinearGradient)`
 export const ButtomView = styled(Animated.View)`
   width: 100%;
   align-items: center;
+  position: absolute;
+  bottom: 30px;
+  z-index: 9999;
 `;
 
 export const Buttom = styled.TouchableOpacity.attrs({
