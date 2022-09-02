@@ -24,7 +24,7 @@ export default function Main() {
   const backgroundColor = useSharedValue("white");
 
   const [showCardSelect, setShowCardSelect] = useState(false);
-  const [confirm, setConfirm] = useState(false);
+  const [confirm, setConfirm] = useState(true);
 
   const handleConfirm = () => {
     if (showCardSelect) {
