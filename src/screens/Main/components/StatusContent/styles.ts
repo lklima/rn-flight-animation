@@ -7,26 +7,27 @@ export const Container = styled(Animated.View)`
   align-items: center;
   justify-content: center;
   position: absolute;
-  bottom: 30px;
+  bottom: 40px;
   z-index: 9999;
 `;
 
-export const ScrollTextView = styled.View`
+export const ScrollTextView = styled(Animated.View)`
   height: 20px;
   width: 100%;
   align-items: center;
   position: absolute;
-  top: 70px;
+  top: 60px;
   z-index: 9999;
 `;
 
 export const StatusText = styled.Text`
-  font-size: 18px;
-  color: gray;
+  font-size: 19px;
+  color: #c3c3c3;
+  font-weight: 600;
   text-align: center;
 `;
 
-export const IconViewOut = styled.View`
+export const IconViewOut = styled(Animated.View)`
   height: 100px;
   width: 100px;
   border-radius: 80px;
@@ -37,7 +38,7 @@ export const IconViewOut = styled.View`
   z-index: 999;
 `;
 
-export const IconView = styled(Animated.View)`
+export const IconView = styled.View`
   height: 80px;
   width: 80px;
   border-radius: 40px;

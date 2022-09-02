@@ -11,8 +11,10 @@ import {
   withSequence,
   withTiming,
   Easing,
+  ZoomIn,
+  FadeInDown,
 } from "react-native-reanimated";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 
 import * as S from "./styles";
 
@@ -32,37 +34,52 @@ export default function StatusContent() {
   const listRef = useRef<FlatList>(null);
 
   useEffect(() => {
-    let index = 0;
+    setTimeout(() => {
+      let index = 0;
 
-    iconOpacity.value = withSequence(
-      withTiming(1),
-      withDelay(2400, withTiming(0)),
-      withTiming(1),
-      withDelay(2400, withTiming(0)),
-      withTiming(1)
-    );
+      iconOpacity.value = withSequence(
+        withTiming(1),
+        withDelay(2400, withTiming(0)),
+        withTiming(1),
+        withDelay(2400, withTiming(0)),
+        withTiming(1),
+        withDelay(2400, withTiming(0)),
+        withTiming(1)
+      );
 
-    wave1Scale.value = withRepeat(
-      withTiming(1, { duration: 2500, easing: Easing.linear }),
-      -1,
-      false
-    );
+      wave1Scale.value = withRepeat(
+        withTiming(1, { duration: 2500, easing: Easing.linear }),
+        -1,
+        false
+      );
 
-    wave2Scale.value = withDelay(
-      800,
-      withRepeat(withTiming(1, { duration: 2500, easing: Easing.linear }), -1, false)
-    );
+      wave2Scale.value = withDelay(
+        800,
+        withRepeat(withTiming(1, { duration: 2500, easing: Easing.linear }), -1, false)
+      );
 
-    const interval = setInterval(() => {
-      index = index + 1;
+      const interval = setInterval(() => {
+        if (index < texts.length - 1) {
+          index = index + 1;
 
-      if (index <= texts.length - 1) {
-        listRef.current.scrollToIndex({ index, animated: true });
-        setIcon(index === 1 ? "link-sharp" : "shield-checkmark-outline");
-      } else {
-        clearInterval(interval);
-      }
-    }, 3000);
+          setTimeout(
+            () => listRef.current.scrollToIndex({ index, animated: true }),
+            index === 2 ? 3000 : 0
+          );
+
+          if (index === 1) {
+            setIcon("link-sharp");
+            setTimeout(() => setIcon("shield-checkmark-outline"), 2900);
+          }
+
+          if (index === 2) {
+            setTimeout(() => setIcon("check"), 2900);
+          }
+        } else {
+          clearInterval(interval);
+        }
+      }, 3000);
+    }, 300);
   }, []);
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
@@ -103,7 +120,7 @@ export default function StatusContent() {
 
   return (
     <S.Container exiting={FlipOutXUp} style={buttonAnimatedStyle}>
-      <S.ScrollTextView>
+      <S.ScrollTextView entering={FadeInDown.duration(600).delay(300)}>
         <FlatList
           ref={listRef}
           data={texts}
@@ -112,10 +129,14 @@ export default function StatusContent() {
           renderItem={({ item }) => <S.StatusText>{item}</S.StatusText>}
         />
       </S.ScrollTextView>
-      <S.IconViewOut>
+      <S.IconViewOut entering={ZoomIn.duration(600).delay(300)}>
         <S.IconView>
           <S.IconContent style={iconAnimatedStyle}>
-            <Ionicons name={icon} size={45} color="#d3d3d3" />
+            {icon === "check" ? (
+              <Entypo name="check" size={50} color="black" />
+            ) : (
+              <Ionicons name={icon} size={45} color="#d3d3d3" />
+            )}
           </S.IconContent>
         </S.IconView>
       </S.IconViewOut>

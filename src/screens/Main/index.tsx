@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import {
   FadeOut,
   FlipOutXUp,
+  interpolate,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
   withTiming,
 } from "react-native-reanimated";
 import { StatusBar } from "react-native";
@@ -13,6 +15,7 @@ import * as S from "./styles";
 
 import logo from "../../assets/images/logo.png";
 import airplane from "../../assets/images/airplane.png";
+import clouds from "../../assets/images/clouds.png";
 import profile from "../../assets/images/profile.jpeg";
 import nopic from "../../assets/images/nopic.jpeg";
 
@@ -22,6 +25,9 @@ import StatusContent from "./components/StatusContent";
 
 export default function Main() {
   const backgroundColor = useSharedValue("white");
+  const airplaneRotateZ = useSharedValue(0);
+  const airplaneShadowY = useSharedValue(0);
+  const airplaneShadowX = useSharedValue(0);
 
   const [showCardSelect, setShowCardSelect] = useState(false);
   const [confirm, setConfirm] = useState(true);
@@ -37,11 +43,31 @@ export default function Main() {
 
   useEffect(() => {
     backgroundColor.value = withTiming(confirm ? "#F1F1F1" : "white", { duration: 600 });
+    if (confirm) {
+      setTimeout(() => {
+        airplaneRotateZ.value = withSequence(
+          withTiming(-10, { duration: 4000 }),
+          withTiming(-10, { duration: 2000 }),
+          withTiming(0, { duration: 2000 })
+        );
+
+        airplaneShadowY.value = withTiming(200, { duration: 8000 });
+      }, 6000);
+    }
   }, [confirm]);
 
   const backgroundAnimatedStyle = useAnimatedStyle(() => ({
     backgroundColor: backgroundColor.value,
   }));
+
+  const airplaneAnimatedStyle = useAnimatedStyle(() => {
+    airplaneShadowX.value = interpolate(airplaneShadowY.value, [0, 200], [0, -400]);
+
+    return {
+      transform: [{ rotateZ: airplaneRotateZ.value + "deg" }],
+      shadowOffset: { height: airplaneShadowY.value, width: airplaneShadowX.value },
+    };
+  });
 
   return (
     <>
@@ -73,7 +99,12 @@ export default function Main() {
             </S.Content>
           </S.FlyInfo>
         )}
-        <S.Airplane source={airplane} resizeMode="contain" />
+        <S.Airplane
+          source={airplane}
+          style={airplaneAnimatedStyle}
+          resizeMode="contain"
+        />
+        <S.Cloud source={clouds} resizeMode="contain" />
         {!confirm && (
           <S.TicketInfo exiting={FlipOutXUp.duration(600)}>
             <S.TicketView>
