@@ -13,6 +13,7 @@ import {
   Easing,
   ZoomIn,
   FadeInDown,
+  FadeOut,
 } from "react-native-reanimated";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 
@@ -119,7 +120,7 @@ export default function StatusContent() {
   });
 
   return (
-    <S.Container exiting={FlipOutXUp} style={buttonAnimatedStyle}>
+    <S.Container exiting={FadeOut.duration(800)} style={buttonAnimatedStyle}>
       <S.ScrollTextView entering={FadeInDown.duration(600).delay(300)}>
         <FlatList
           ref={listRef}
