@@ -54,7 +54,6 @@ export const Wave = styled(Animated.View)`
   height: 350px;
   width: 350px;
   border-radius: 200px;
-  background: #f1f1f1;
   box-shadow: 0px 0px 20px white;
   position: absolute;
   z-index: 10;

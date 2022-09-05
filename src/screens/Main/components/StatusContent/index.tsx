@@ -30,6 +30,8 @@ export default function StatusContent() {
   const wave2Scale = useSharedValue(0);
   const wave2Opacity = useSharedValue(1);
 
+  const waveBackground = useSharedValue("#f1f1f1");
+
   const [icon, setIcon] = useState<any>("md-wifi");
 
   const listRef = useRef<FlatList>(null);
@@ -58,6 +60,8 @@ export default function StatusContent() {
         800,
         withRepeat(withTiming(1, { duration: 2500, easing: Easing.linear }), -1, false)
       );
+
+      waveBackground.value = withDelay(8000, withTiming("rgba(241, 241, 241, 0.4)"));
 
       const interval = setInterval(() => {
         if (index < texts.length - 1) {
@@ -102,6 +106,7 @@ export default function StatusContent() {
     return {
       transform: [{ scale: wave1Scale.value }],
       opacity: wave1Opacity.value,
+      backgroundColor: waveBackground.value,
     };
   });
 
@@ -116,11 +121,12 @@ export default function StatusContent() {
     return {
       transform: [{ scale: wave2Scale.value }],
       opacity: wave2Opacity.value,
+      backgroundColor: waveBackground.value,
     };
   });
 
   return (
-    <S.Container exiting={FadeOut.duration(800)} style={buttonAnimatedStyle}>
+    <S.Container exiting={FadeOut.duration(600)} style={buttonAnimatedStyle}>
       <S.ScrollTextView entering={FadeInDown.duration(600).delay(300)}>
         <FlatList
           ref={listRef}
