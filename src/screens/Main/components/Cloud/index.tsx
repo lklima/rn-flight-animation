@@ -17,6 +17,7 @@ interface Props {
   zIndex?: number;
   delay?: number;
   bottom: number;
+  noShadow?: boolean;
 }
 
 export default function Cloud({
@@ -25,6 +26,7 @@ export default function Cloud({
   bottom,
   zIndex,
   confirmed,
+  noShadow,
 }: Props) {
   const { width } = useWindowDimensions();
 
@@ -53,6 +55,7 @@ export default function Cloud({
     ...sizeValue,
     bottom,
     zIndex,
+    shadowOpacity: noShadow ? 0 : 0.08,
   }));
 
   return <S.Cloud source={cloud} style={cloudAnimatedStyle} resizeMode="contain" />;

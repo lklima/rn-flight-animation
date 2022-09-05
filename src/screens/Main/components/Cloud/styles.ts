@@ -8,6 +8,5 @@ export const Cloud = styled(Animated.Image)`
   align-self: center;
   bottom: 40px;
   z-index: 9999;
-  overflow: visible;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
 `;
