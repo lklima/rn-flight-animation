@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  FlipInXDown,
   FlipOutXUp,
   useAnimatedStyle,
   useSharedValue,
@@ -9,10 +10,11 @@ import {
 import * as S from "./styles";
 
 interface Props {
+  showFlyInfo: boolean;
   onPress: () => void;
 }
 
-export default function Button({ onPress }: Props) {
+export default function Button({ showFlyInfo, onPress }: Props) {
   const buttonScale = useSharedValue(1);
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
@@ -24,14 +26,20 @@ export default function Button({ onPress }: Props) {
   };
 
   return (
-    <S.ButtomView exiting={FlipOutXUp} style={buttonAnimatedStyle}>
+    <S.ButtomView
+      entering={FlipInXDown.duration(600)}
+      exiting={FlipOutXUp}
+      style={buttonAnimatedStyle}
+    >
       <S.Buttom
-        onPress={onPress}
+        onPress={showFlyInfo ? () => {} : onPress}
         onPressIn={() => handlePress("pressIn")}
         onPressOut={() => handlePress("pressOut")}
       >
         <S.ButtomContent>
-          <S.ButtomText>Confirm $1,536.00</S.ButtomText>
+          <S.ButtomText>
+            {showFlyInfo ? "Go to Home screen" : "Confirm $1,536.00"}
+          </S.ButtomText>
         </S.ButtomContent>
       </S.Buttom>
     </S.ButtomView>

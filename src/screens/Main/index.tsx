@@ -15,35 +15,41 @@ import * as S from "./styles";
 
 import logo from "../../assets/images/logo.png";
 import airplane from "../../assets/images/airplane.png";
-import clouds from "../../assets/images/clouds.png";
 import profile from "../../assets/images/profile.jpeg";
 import nopic from "../../assets/images/nopic.jpeg";
 
 import Button from "./components/Button";
 import CardSelect from "./components/CardSelect";
 import StatusContent from "./components/StatusContent";
+import Cloud from "./components/Cloud";
+import FlyContent from "./components/FlyContent";
 
 export default function Main() {
   const backgroundColor = useSharedValue("white");
   const airplaneRotateZ = useSharedValue(0);
   const airplaneShadowY = useSharedValue(0);
   const airplaneShadowX = useSharedValue(0);
+  const airplaneScale = useSharedValue(1);
+  const airplaneTranlateY = useSharedValue(0);
 
   const [showCardSelect, setShowCardSelect] = useState(false);
-  const [confirm, setConfirm] = useState(true);
+  const [confirm, setConfirm] = useState(false);
+  const [showStatus, setShowStatus] = useState(false);
+  const [showFlyInfo, setShowFlyInfo] = useState(false);
 
   const handleConfirm = () => {
     if (showCardSelect) {
       setShowCardSelect(false);
       setConfirm(true);
+      setShowStatus(true);
     } else {
       setShowCardSelect(true);
     }
   };
 
   useEffect(() => {
-    backgroundColor.value = withTiming(confirm ? "#F1F1F1" : "white", { duration: 600 });
     if (confirm) {
+      backgroundColor.value = withTiming("#F1F1F1", { duration: 600 });
       setTimeout(() => {
         airplaneRotateZ.value = withSequence(
           withTiming(-10, { duration: 4000 }),
@@ -53,6 +59,11 @@ export default function Main() {
 
         airplaneShadowY.value = withTiming(200, { duration: 8000 });
       }, 6000);
+      setTimeout(() => {
+        setShowStatus(false);
+        backgroundColor.value = withTiming("white", { duration: 800 });
+        setTimeout(() => setShowFlyInfo(true), 600);
+      }, 14000);
     }
   }, [confirm]);
 
@@ -61,10 +72,16 @@ export default function Main() {
   }));
 
   const airplaneAnimatedStyle = useAnimatedStyle(() => {
-    airplaneShadowX.value = interpolate(airplaneShadowY.value, [0, 200], [0, -400]);
+    airplaneShadowX.value = interpolate(airplaneShadowY.value, [0, 200], [0, -450]);
+    airplaneScale.value = interpolate(airplaneShadowY.value, [0, 200], [1, 0.8]);
+    airplaneTranlateY.value = interpolate(airplaneShadowY.value, [0, 200], [0, 60]);
 
     return {
-      transform: [{ rotateZ: airplaneRotateZ.value + "deg" }],
+      transform: [
+        { rotateZ: airplaneRotateZ.value + "deg" },
+        { scale: airplaneScale.value },
+        { translateY: airplaneTranlateY.value },
+      ],
       shadowOffset: { height: airplaneShadowY.value, width: airplaneShadowX.value },
     };
   });
@@ -104,7 +121,17 @@ export default function Main() {
           style={airplaneAnimatedStyle}
           resizeMode="contain"
         />
-        <S.Cloud source={clouds} resizeMode="contain" />
+        <Cloud confirmed={confirm} bottom={200} delay={2000} />
+        <Cloud confirmed={confirm} bottom={-100} delay={4000} />
+        <Cloud confirmed={confirm} size="lg" bottom={-600} zIndex={9999} />
+        <Cloud
+          confirmed={confirm}
+          noShadow
+          size="lg"
+          bottom={-500}
+          delay={4000}
+          zIndex={888}
+        />
         {!confirm && (
           <S.TicketInfo exiting={FlipOutXUp.duration(600)}>
             <S.TicketView>
@@ -152,9 +179,12 @@ export default function Main() {
             <S.TotalValue>$ 1,536.00</S.TotalValue>
           </S.InfoContent>
         )}
-        {!confirm && <Button onPress={handleConfirm} />}
+        {(!confirm || showFlyInfo) && (
+          <Button showFlyInfo={showFlyInfo} onPress={handleConfirm} />
+        )}
         {showCardSelect && <CardSelect />}
-        {confirm && <StatusContent />}
+        {showStatus && <StatusContent />}
+        {showFlyInfo && <FlyContent />}
       </S.Container>
     </>
   );
